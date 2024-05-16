@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
+import { SignIn } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 
 import {
   Navbar,
@@ -11,19 +13,34 @@ import {
 } from "./components";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Box sx={{ backgroundColor: "#000" }}>
-        <Navbar />
-        <Routes>
-          <Route exact path="/" element={<Feed />} />
-          <Route path="/video/:id" element={<VideoDetails />} />
-          <Route path="/channel/:id" element={<ChannelDetails />} />
-          <Route path="/search/:searchTerm" element={<SearchFeed />} />
-        </Routes>
-      </Box>
-    </BrowserRouter>
-  );
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (isSignedIn) {
+    return (
+      <BrowserRouter>
+        <Box sx={{ backgroundColor: "#000" }}>
+          <Navbar />]
+          <Routes>
+            <Route exact path="/" element={<Feed />} />
+            <Route path="/video/:id" element={<VideoDetails />} />
+            <Route path="/channel/:id" element={<ChannelDetails />} />
+            <Route path="/search/:searchTerm" element={<SearchFeed />} />
+          </Routes>
+        </Box>
+      </BrowserRouter>
+    );
+  }
+
+  return (<div style={{display:"flex", justifyContent : "center", alignItems : "center", minHeight : "100vh", width : "100% ",backgroundColor: "#000"}}>
+
+    <SignIn />;
+  </div>
+  )
+
 };
 
 export default App;
